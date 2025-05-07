@@ -1,0 +1,28 @@
+[project]
+name = "onnxnpu"
+version = "0.1.0"
+description = "CLI toolkit to check, optimize and modify ONNX models for NPU deployment"
+authors = [
+    {name = "Mason Huang", email = "masonhuang0320@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "onnx (>=1.17.0,<2.0.0)"
+]
+
+[project.urls]
+homepage = "https://github.com/HuangMason320/onnxnpu-toolkit"
+repository = "https://github.com/HuangMason320/onnxnpu-toolkit"
+
+[tool.poetry]
+packages = [{include = "onnxnpu", from = "src"}]
+license = "MIT"
+
+[project.scripts]
+onpu = "onnxnpu.cli:main"
+onnxnpu = "onnxnpu.cli:main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

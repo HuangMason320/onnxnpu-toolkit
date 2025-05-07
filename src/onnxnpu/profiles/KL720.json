@@ -1,0 +1,121 @@
+{
+    "name": "KL720",
+    "vendor": "Kneron",
+    "version": "SDK 1.5.0",
+    "opset": 13,
+    "operators": {
+    "Add": { "status": "supported" },
+    "AveragePool": {
+    "status": "supported",
+    "constraints": "kernel_h == kernel_w <= 3"},
+    "BatchNormalization": { "status": "supported" },
+    "BitShift": { "status": "unsupported" },
+    "Cast": { "status": "unsupported" },
+    "Clip": {
+    "status": "partial",
+    "constraints": "min == 0"
+    },
+    "Concat": { "status": "supported" },
+    "Conv": { "status": "supported" },
+    "ConvTranspose": {
+    "status": "partial",
+    "constraints": "stride == 2"
+    },
+    "DepthToSpace": { "status": "unsupported" },
+    "Div": { "status": "unsupported" },
+    "Dropout": { "status": "supported" },
+    "Elu": { "status": "unsupported" },
+    "Erf": { "status": "unsupported" },
+    "Exp": { "status": "unsupported" },
+    "Expand": { "status": "unsupported" },
+    "Flatten": {
+    "status": "supported",
+    "constraints": "must precede Gemm"
+    },
+    "Floor": { "status": "unsupported" },
+    "Gather": { "status": "unsupported" },
+    "GatherElements": { "status": "unsupported" },
+    "GatherND": { "status": "unsupported" },
+    "Gemm": { "status": "supported" },
+    "GlobalAveragePool": {
+    "status": "supported",
+    "constraints": "input+output pixels <= 1048576"
+    },
+    "GlobalLpPool": { "status": "unsupported" },
+    "GlobalMaxPool": { "status": "supported" },
+    "GRU": { "status": "supported" },
+    "Hardmax": { "status": "unsupported" },
+    "HardSigmoid": { "status": "supported" },
+    "InstanceNormalization": { "status": "unsupported" },
+    "LeakyRelu": { "status": "supported" },
+    "LpNormalization": { "status": "unsupported" },
+    "LRN": { "status": "unsupported" },
+    "LSTM": { "status": "unsupported" },
+    "MatMul": { "status": "supported" },
+    "MaxPool": {
+    "status": "supported",
+    "constraints": "kernel_h == kernel_w <= 3"
+    },
+    "MaxRoiPool": { "status": "supported" },
+    "MaxUnpool": { "status": "unsupported" },
+    "Mean": { "status": "supported" },
+    "Min": { "status": "unsupported" },
+    "Mod": { "status": "unsupported" },
+    "Mul": { "status": "supported" },
+    "Multinomial": { "status": "unsupported" },
+    "Neg": { "status": "supported" },
+    "NonMaxSuppression": { "status": "unsupported" },
+    "NonZero": { "status": "unsupported" },
+    "Not": { "status": "unsupported" },
+    "OneHot": { "status": "unsupported" },
+    "Or": { "status": "unsupported" },
+    "Pad": {
+    "status": "supported",
+    "constraints": "mode == constant && value == 0"
+    },
+    "Pow": {
+    "status": "partial",
+    "constraints": "exponent == 2"
+    },
+    "PRelu": { "status": "supported" },
+    "RandomUniformLike": { "status": "unsupported" },
+    "Reciprocal": { "status": "supported" },
+    "ReduceLogSum": { "status": "unsupported" },
+    "ReduceLogSumExp": { "status": "unsupported" },
+    "ReduceMax": { "status": "unsupported" },
+    "ReduceMean": {
+    "status": "partial",
+    "constraints": "behaves like GlobalAveragePool; same pixel limit"
+    },
+    "ReduceSum": { "status": "supported" },
+    "ReduceSumSquare": { "status": "supported" },
+    "Relu": { "status": "supported" },
+    "Reshape": { "status": "supported" },
+    "Resize": {
+    "status": "partial",
+    "constraints": "upsampling only; mode in [bilinear, nearest]"},
+    "RNN": { "status": "supported" },
+    "RoiAlign": { "status": "supported" },
+    "Selu": { "status": "unsupported" },
+    "Shrink": { "status": "unsupported" },
+    "Sigmoid": { "status": "supported" },
+    "Slice": { "status": "supported" },
+    "Softmax": { "status": "unsupported" },
+    "Softplus": { "status": "unsupported" },
+    "Softsign": { "status": "unsupported" },
+    "SpaceToDepth": { "status": "unsupported" },
+    "Split": { "status": "supported" },
+    "Squeeze": { "status": "unsupported" },
+    "Sub": { "status": "supported" },
+    "Sum": { "status": "supported" },
+    "Tanh": { "status": "supported" },
+    "ThresholdedRelu": { "status": "unsupported" },
+    "Tile": { "status": "unsupported" },
+    "Transpose": { "status": "supported" },
+    "Unsqueeze": { "status": "unsupported" },
+    "Upsample": {
+    "status": "partial",
+    "constraints": "mode in [bilinear, nearest]"}
+    }
+    }
+    
