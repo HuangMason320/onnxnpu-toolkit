@@ -1,6 +1,6 @@
 [project]
 name = "onnxnpu"
-version = "0.1.0"
+version = "0.1.1"
 description = "CLI toolkit to check, optimize and modify ONNX models for NPU deployment"
 authors = [
     {name = "Mason Huang", email = "masonhuang0320@gmail.com"}

@@ -77,6 +77,18 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Output path for modified model",
     )
     
+    # List command
+    list_parser = subparsers.add_parser(
+        "list",
+        help="List available hardware profiles",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    list_parser.add_argument(
+        "--verbose", "-v",
+        action="store_true",
+        help="Show detailed information about each profile"
+    )
+    
     return parser
 
 # ---------------------------------------------------------------------------
@@ -116,6 +128,35 @@ def opt_command(args) -> None:
         print_model_summary(updated_path)
     else:
         print("No optimization specified. Use --opset to update the opset version.")
+        
+def list_command(args) -> None:
+    """Handle the 'list' subcommand."""
+    profile_names = iter_profiles()
+    
+    if not profile_names:
+        print("No hardware profiles found.")
+        return
+    
+    print(f"Available hardware profiles ({len(profile_names)}):")
+    print("-" * 50)
+    
+    if args.verbose:
+        # Detailed view with description and supported op count
+        for name in profile_names:
+            try:
+                profile = load_profile(name)
+                description = profile.get("description", "No description available")
+                op_count = len(profile.get("operators", {}))
+                print(f"{name.upper()}: {description}")
+                print(f"  Supported operators: {op_count}")
+                print()
+            except Exception as e:
+                print(f"{name.upper()}: Error loading profile - {str(e)}")
+                print()
+    else:
+        # Simple list view
+        for i, name in enumerate(profile_names, 1):
+            print(f"{i}. {name.upper()}")
 
 # ---------------------------------------------------------------------------
 # Main entry point
@@ -145,6 +186,8 @@ def main(argv: List[str] | None = None) -> None:
         check_command(args)
     elif args.command == "opt":
         opt_command(args)
+    elif args.command == "list":
+        list_command(args)
 
 if __name__ == "__main__":  # pragma: no cover
     main()
