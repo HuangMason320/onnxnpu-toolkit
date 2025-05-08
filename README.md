@@ -40,6 +40,7 @@ You can use two different CLI commands: `onnxnpu` or `onpu` to check, optimize, 
 | Command                                       | Description                                           |
 |-----------------------------------------------|-------------------------------------------------------|
 | `pip install onnxnpu`                         | Install latest package from PyPI                      |
+| `onnxnpu list`                   | Show current available hardware series                         |
 | `onnxnpu check my_model.onnx -p KL720`           | Check `my_model.onnx` for the KL720 hardware profile  |
 | `onnxnpu check my_model.onnx`                    | Check `my_model.onnx` for all built-in profiles       |
 | `onnxnpu opt my_model.onnx --opset 13`           | Update model to opset 13                              |

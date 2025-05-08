@@ -162,22 +162,9 @@ wheels = [
 [[package]]
 name = "onnxnpu"
 version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "onnx" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5e/24/27747d919da1183a3afbc3c3e4aa912d6433cc758fb2d697d5ab9f24885c/onnxnpu-0.1.1.tar.gz", hash = "sha256:ef625027e850b2b3d6fc22945b99414d5b14c094ca12714c99fce6c92bfc58b7", size = 16935, upload-time = "2025-05-08T15:33:12.161Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/cc/a5/1e9f905db25b3bcdca58115ee105961175d30a5b663c5223f4f45d4249f7/onnxnpu-0.1.1-py3-none-any.whl", hash = "sha256:40e82f804749233650f1fedc605c8fde117fe7a76ccbd154db3034db4af8a6ac", size = 20000, upload-time = "2025-05-08T15:33:10.223Z" },
-]
-
-[[package]]
-name = "onnxnpu-toolkit"
-version = "0.1.1"
 source = { virtual = "." }
 dependencies = [
     { name = "onnx" },
-    { name = "onnxnpu" },
 ]
 
 [package.metadata]
