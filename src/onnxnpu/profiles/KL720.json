@@ -16,6 +16,7 @@
     "constraints": "min == 0"
     },
     "Concat": { "status": "supported" },
+    "Constant": { "status": "supported" },
     "Conv": { "status": "supported" },
     "ConvTranspose": {
     "status": "partial",
