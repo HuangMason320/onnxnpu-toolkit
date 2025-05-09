@@ -5,10 +5,20 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/) and [Sem
 
 ## [Unreleased]
 ### Added
-- Add onnx.checker for `onnxnpu check` and `onnxnpu opt`  command
-- Add test code for onnx.checker's in [`tests/test_onnxchecker.py`](tests/test_onnxchecker.py) -> Add pytest package into project
+
 ### Changed
 
+### Fixed
+
+## [0.1.2] - 2025-05-10
+### Added
+- Add onnx.checker for `onnxnpu check` and `onnxnpu opt` command.
+- Add test code for onnx.checker's in [`tests/test_onnxchecker.py`](tests/test_onnxchecker.py).
+- Add Kneron dongles' limit size of model except KL530.
+- Add Size check for `onnxnpu check`.
+
+### Changed
+- Modify `onnxnpu check` output format.
 ### Fixed
  
 

@@ -50,48 +50,46 @@ You can use two different CLI commands: `onnxnpu` or `onpu` to check, optimize, 
 | `onnxnpu list`                   | Show current available hardware series                         |
 | `onnxnpu check my_model.onnx -p KL720`           | Check `my_model.onnx` for the KL720 hardware profile  |
 | `onnxnpu check my_model.onnx`                    | Check `my_model.onnx` for all built-in profiles       |
-| `onnxnpu opt my_model.onnx --opset 13`           | Update model to opset 13                              |
+| `onnxnpu opt my_model.onnx --opset [version]`           | Update model to opset 12~18                              |
 | `onnxnpu -V`, `onnxnpu --version`                   | Show version number and exit                          |
 
 ### Sample output
 
 ```
-Model summary – my_model.onnx
-IR version : 6    Opset : 11
+════════════════════════════════════════════════════════════
+MODEL INFO
+════════════════════════════════════════════════════════════
+Model name - my_model.onnx
+IR version : 6
+Opset : 13
 Inputs  : input  float32  [1, 3, 112, 112]
 Outputs : output  float32  [1, 512]
 Dynamic axes : None detected ✓
 
-my_model.onnx · IR 6 · KL520
-╭──────────────────────────────────────────────────────────────╮
-│  Status  Operator   Count   Notes                            │
-├──────────────────────────────────────────────────────────────┤
-│   ✓      Conv        27                                      │
-│   ✓      Relu        27                                      │
-│   ✗      Elu          5     Not supported on KL520           │
-│   ✓      MaxPool      5                                      │
-│   ✗      Resize       2     Only linear/nearest modes OK     │
-╰──────────────────────────────────────────────────────────────╯
-⚠  2 unsupported operator(s) detected.
+════════════════════════════════════════════════════════════
+HARDWARE COMPATIBILITY - KL520
+════════════════════════════════════════════════════════════
++--------+--------------------+-------+-------+
+| Status | Operator           | Count | Notes |
++--------+--------------------+-------+-------+
+|   ✓    | Add                | 16    |       |
+|   ✓    | BatchNormalization | 18    |       |
+|   ✓    | Conv               | 37    |       |
+|   ✓    | Flatten            | 1     |       |
+|   ✓    | Gemm               | 1     |       |
+|   ✓    | PRelu              | 17    |       |
++--------+--------------------+-------+-------+
+
+════════════════════════════════════════════════════════════
+MEMORY REQUIREMENTS - KL520
+════════════════════════════════════════════════════════════
+Estimated NEF size:   32.56 MB
+USB model limit:      35.00 MB  -> OK
+Flash model limit:    32.00 MB  -> MIGHT EXCEEDS LIMIT
+
+Summary: All operators are supported on KL520 ✓
+Total operators: 6 (instances: 90)
 ```
-
-<!-- ## 🛠️ Development & Publishing
-
-透過 Poetry 一鍵建置與發佈：
-
-```bash
-# 1. build wheel and sdist
-poetry build
-
-# 2. （Test version）publish to TestPyPI
-poetry config repositories.testpypi https://test.pypi.org/legacy/
-poetry config pypi-token.testpypi <YOUR_TEST_PYPI_TOKEN>
-poetry publish -r testpypi
-
-# 3. Publish official version to PyPI
-poetry config pypi-token.pypi <YOUR_PYPI_TOKEN>
-poetry publish
-``` -->
 
 ## 🧑‍💻 API usage
 

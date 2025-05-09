@@ -115,8 +115,11 @@ def check_command(args) -> None:
         # Warn if KL* profile & dynamic dims present
         if dynamic and profile.get("name", "").lower().startswith("kl"):
             print(f"[WARNING] Model uses dynamic axes which are NOT supported on {profile['name']}.")
-            
-        report = Checker(model_path, profile).run()
+        
+        # Create checker with skip_size_check option
+        checker = Checker(model_path, profile)
+        report = checker.run()
+        
         print(report.to_markdown() if args.markdown else report)
         print_summary(report)
         print()
