@@ -5,7 +5,8 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/) and [Sem
 
 ## [Unreleased]
 ### Added
-
+- Add onnx.checker for `onnxnpu check` and `onnxnpu opt`  command
+- Add test code for onnx.checker's in [`tests/test_onnxchecker.py`](tests/test_onnxchecker.py) -> Add pytest package into project
 ### Changed
 
 ### Fixed
@@ -14,7 +15,7 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/) and [Sem
 ## [0.1.1] – 2025-05-08
 ### Added
 - Add `Constant` into KL series' json file.
-- `profile list` subcommand to list all built-in hardware profiles.
+- `onnxnpu list` subcommand to list all built-in hardware profiles.
 
 ### Changed
 

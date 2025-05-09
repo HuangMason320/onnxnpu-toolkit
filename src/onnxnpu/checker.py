@@ -31,6 +31,7 @@ __all__ = [
     "print_summary",
     "Checker",
     "Report",
+    "valid_check",
 ]
 
 # ---------------------------------------------------------------------------
@@ -94,6 +95,7 @@ def _tensor_info(value_info) -> Tuple[str, str, List[str]]:
 def print_model_summary(model_path: Path) -> bool:
     """Print basic info; return True if dynamic axes present."""
     print()
+    
     model = onnx.load(str(model_path))
     ir_version = model.ir_version
     opset_version = max(op.version for op in model.opset_import)
@@ -128,6 +130,7 @@ def print_model_summary(model_path: Path) -> bool:
     print()
     return dynamic
 
+
 # ---------------------------------------------------------------------------
 # Compatibility summary helper
 # ---------------------------------------------------------------------------
@@ -153,6 +156,36 @@ def print_summary(report: "Report") -> None:
 # ---------------------------------------------------------------------------
 # Checker / Report
 # ---------------------------------------------------------------------------
+def valid_check(model_path: Path) -> bool:
+    """
+    Verify that an ONNX model is valid and return whether it has dynamic axes.
+    
+    Args:
+        model_path: Path to the ONNX model file
+        
+    Returns:
+        bool: True if the model has dynamic axes, False if all dimensions are static
+        
+    Raises:
+        onnx.checker.ValidationError: If the model is invalid
+    """
+    try:
+        model = onnx.load(str(model_path))
+        onnx.checker.check_model(model)
+        
+        # Use the existing dynamic axes detection from print_model_summary
+        dynamic = any(
+            not d.isdigit()
+            for vi in (*model.graph.input, *model.graph.output)
+            for d in _tensor_info(vi)[2]
+        )
+        
+        return dynamic
+        
+    except onnx.checker.ValidationError as e:
+        print(f"[ERROR] Invalid model: {model_path.name}")
+        print(f"  {e}")
+        raise
 
 class Checker:
     """Compare an ONNX model's operators to a hardware profile."""

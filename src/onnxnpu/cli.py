@@ -10,6 +10,7 @@ import argparse
 import sys
 from pathlib import Path
 from typing import List
+import onnx
 
 from . import __version__
 from .checker import (
@@ -18,6 +19,7 @@ from .checker import (
     load_profile,
     print_model_summary,
     print_summary,
+    valid_check,
 )
 from .optimizer import update_opset_version
 
@@ -99,6 +101,8 @@ def check_command(args) -> None:
     """Handle the 'check' subcommand."""
     model_path = Path(args.model)
     
+    valid_check(model_path)
+    
     # Show model IO + detect dynamic axes
     dynamic = print_model_summary(model_path)
     
@@ -120,6 +124,8 @@ def check_command(args) -> None:
 def opt_command(args) -> None:
     """Handle the 'opt' subcommand."""
     model_path = Path(args.model)
+    
+    valid_check(model_path)  # Check if the model is valid
     
     # Handle opset update if requested
     if args.opset is not None:

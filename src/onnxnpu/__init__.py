@@ -31,6 +31,7 @@ from .checker import (  # noqa: F401  (re‑export)
     load_profile,
     print_model_summary,
     print_summary,
+    valid_check,
 )
 
 from .optimizer import (  # noqa: F401  (re‑export)
@@ -47,4 +48,5 @@ __all__ = [
     "print_model_summary",
     "print_summary",
     "update_opset_version",
+    "valid_check",
 ]

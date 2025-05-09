@@ -10,6 +10,7 @@ maintainers = [
 dependencies = [
     "onnx>=1.17.0",
     "onnxnpu>=0.1.1",
+    "pytest>=8.3.5",
 ]
 license = { text = "Apache-2.0" }
 
