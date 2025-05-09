@@ -3,6 +3,11 @@
     "vendor": "Kneron",
     "version": "SDK 1.5.0",
     "opset": 13,
+    "memory_limits": {
+    "usb_model_size": 78643200,
+    "flash_model_size": 73400320,
+    "compression_ratio": 0.25
+    },
     "operators": {
     "Add": { "status": "supported" },
     "AveragePool": {

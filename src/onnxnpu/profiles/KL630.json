@@ -2,6 +2,11 @@
     "name": "KL630",
     "vendor": "Kneron",
     "opset": 13,
+    "memory_limits": {
+    "usb_model_size": 62914560,
+    "flash_model_size": 57671680,
+    "compression_ratio": 0.25
+    },
     "operators": {
     "Add": { "status": "supported" },
     "AveragePool": { "status": "supported", "constraints": "kernel_h <= 3 && kernel_w <= 3" },

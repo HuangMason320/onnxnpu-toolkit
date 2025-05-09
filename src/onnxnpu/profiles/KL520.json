@@ -2,6 +2,11 @@
     "name": "KL520",
     "vendor": "Kneron",
     "opset": 13,
+    "memory_limits": {
+    "usb_model_size": 36700160,
+    "flash_model_size": 33554432,
+    "compression_ratio": 0.25
+    },
     "operators": {
     "Add": { "status": "supported" },
     "AveragePool": { "status": "supported", "constraints": "kernel_h == kernel_w <= 3" },
