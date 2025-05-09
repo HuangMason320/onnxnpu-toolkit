@@ -2,7 +2,14 @@
 
 [![PyPI version]][pypi-url] [![License]][license-url]
 
-`onnxnpu` is a lightweight CLI toolkit that **inspects, optimizes, and modifies ONNX models *before* you convert or deploy them to NPUs**.
+**ONNXNPU Toolkit** is an open-source, lightweight CLI utility for **ONNX model compatibility validation** and **performance optimization** on Kneron NPUs (KL520–KL730). Built for machine learning engineers and edge-AI developers, it enables you to:
+
+- **Automatically detect** unsupported ONNX operators before deployment  
+- **Generate** detailed JSON or Markdown reports for hardware-specific compatibility  
+- **Customize** hardware profiles and override rules to match your NPU target  
+<!-- - **Fuse** common layers (BN→Conv, Gemm sequences, Reshape optimizations) for faster inference   -->
+
+Streamline your ONNX to NPU workflow, catch integration issues early, and boost edge-AI inference performance.
 
 > "Catch unsupported operators early before they derail your model."
 > — *Mason Huang*
