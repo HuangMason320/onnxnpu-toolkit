@@ -188,8 +188,8 @@ wheels = [
 
 [[package]]
 name = "onnxnpu"
-version = "0.1.1"
-source = { virtual = "." }
+version = "0.1.2"
+source = { editable = "." }
 dependencies = [
     { name = "onnx" },
     { name = "pytest" },
@@ -198,7 +198,6 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "onnx", specifier = ">=1.17.0" },
-    { name = "onnxnpu", specifier = ">=0.1.1" },
     { name = "pytest", specifier = ">=8.3.5" },
 ]
 
