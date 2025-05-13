@@ -51,6 +51,7 @@ You can use two different CLI commands: `onnxnpu` or `onpu` to check, optimize, 
 | `onnxnpu check my_model.onnx -p KL720`           | Check `my_model.onnx` for the KL720 hardware profile  |
 | `onnxnpu check my_model.onnx`                    | Check `my_model.onnx` for all built-in profiles       |
 | `onnxnpu opt my_model.onnx --opset [version]`           | Update model to opset 12~18                              |
+| `onnxnpu opt my_model.onnx -o [output_name]`           | Optimize the model and save                              |
 | `onnxnpu -V`, `onnxnpu --version`                   | Show version number and exit                          |
 
 ### Sample output

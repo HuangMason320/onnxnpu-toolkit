@@ -36,6 +36,8 @@ from .checker import (  # noqa: F401  (re‑export)
 
 from .optimizer import (  # noqa: F401  (re‑export)
     update_opset_version,
+    optimize_model,
+    infer_shapes,
 )
 
 __all__ = [
@@ -47,6 +49,8 @@ __all__ = [
     "load_profile",
     "print_model_summary",
     "print_summary",
-    "update_opset_version",
     "valid_check",
+    "update_opset_version",
+    "optimize_model",
+    "infer_shapes",
 ]

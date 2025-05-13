@@ -61,6 +61,7 @@ def _build_parser() -> argparse.ArgumentParser:
     check_parser.add_argument("--markdown", action="store_true", help="Output report(s) as Markdown")
     
     # Opt command
+    
     opt_parser = subparsers.add_parser(
         "opt", 
         help="Optimize and modify ONNX models",
@@ -68,15 +69,32 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     opt_parser.add_argument("model", help="Path to .onnx model file")
     opt_parser.add_argument(
+        "-o", "--output",
+        help="Output path for optimized model",
+    )
+    
+    # Optimization options
+    opt_parser.add_argument(
         "--opset", 
         type=int,
-        help="Update model to specified opset version (1-18)",
+        help="Update model to specified opset version (12-18)",
         metavar="VERSION",
-        choices=range(1, 19),  # Max version 18 as specified
+        choices=range(12, 18),  # Max version 18 as specified
     )
     opt_parser.add_argument(
-        "-o", "--output",
-        help="Output path for modified model",
+        "--skip-check", 
+        action="store_true",
+        help="Skip correctness checking after simplification"
+    )
+    opt_parser.add_argument(
+        "--overwrite-shapes", 
+        action="store_true",
+        help="Allow overwriting input shapes during optimization"
+    )
+    opt_parser.add_argument(
+        "--skip-optimizers",
+        nargs="+",
+        help="List of optimizers to skip during simplification"
     )
     
     # List command
@@ -127,16 +145,30 @@ def check_command(args) -> None:
 def opt_command(args) -> None:
     """Handle the 'opt' subcommand."""
     model_path = Path(args.model)
+    output_path = Path(args.output) if args.output else None
     
-    valid_check(model_path)  # Check if the model is valid
+    # Validate original model first
+    try:
+        valid_check(model_path)
+    except Exception as e:
+        print(f"WARNING: Input model validation failed: {str(e)}")
+        print("Attempting to optimize despite validation issues...")
     
-    # Handle opset update if requested
-    if args.opset is not None:
-        output_path = Path(args.output) if args.output else None
-        updated_path = update_opset_version(model_path, args.opset, output_path)
-        print_model_summary(updated_path)
-    else:
-        print("No optimization specified. Use --opset to update the opset version.")
+    # Apply model optimization with optional opset update
+    from .optimizer import optimize_model
+    
+    check_n = 0 if args.skip_check else 1
+    final_path, success = optimize_model(
+        model_path=model_path,
+        output_path=output_path,
+        check_n=check_n,
+        overwrite_input_shapes=args.overwrite_shapes,
+        skip_optimizers=args.skip_optimizers,
+        target_opset=args.opset  # Pass opset directly to the optimize function
+    )
+    
+    # Print model summary of final optimized model
+    print_model_summary(final_path)
         
 def list_command(args) -> None:
     """Handle the 'list' subcommand."""

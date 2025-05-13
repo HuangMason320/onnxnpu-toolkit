@@ -1,0 +1,12 @@
+iniconfig==2.1.0
+markdown-it-py==3.0.0
+mdurl==0.1.2
+numpy==2.2.5
+onnx==1.17.0
+onnxsim==0.4.36
+packaging==25.0w
+pluggy==1.5.0
+protobuf==6.30.2
+pygments==2.19.1
+pytest==8.3.5
+rich==14.0.0
