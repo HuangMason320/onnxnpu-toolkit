@@ -14,7 +14,7 @@ Streamline your ONNX to NPU workflow, catch integration issues early, and boost 
 > "Catch unsupported operators early before they derail your model."
 > — *Mason Huang*
 
-## ✨ Features (v0.1 — released)
+## ✨ Features (v0.2 — released)
 
 | Feature               | Description                                                                                                           |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------- |
