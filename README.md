@@ -2,6 +2,8 @@
 
 [![PyPI version]][pypi-url] [![License]][license-url]
 
+This project incorporates code from [ONNX Simplifier](https://github.com/daquexian/onnx-simplifier) and is licensed under the Apache License 2.0.
+
 **ONNXNPU Toolkit** is an open-source, lightweight CLI utility for **ONNX model compatibility validation** and **performance optimization** on Kneron NPUs (KL520–KL730). Built for machine learning engineers and edge-AI developers, it enables you to:
 
 - **Automatically detect** unsupported ONNX operators before deployment  
