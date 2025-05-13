@@ -96,6 +96,12 @@ def _build_parser() -> argparse.ArgumentParser:
         nargs="+",
         help="List of optimizers to skip during simplification"
     )
+    opt_parser.add_argument(
+        "-p",
+        "--hardware",
+        nargs="*",
+        help="Profile name(s) (e.g. kl720) for checking compatibility after optimization."
+    )
     
     # List command
     list_parser = subparsers.add_parser(
@@ -157,18 +163,26 @@ def opt_command(args) -> None:
     # Apply model optimization with optional opset update
     from .optimizer import optimize_model
     
+    hardware_profile = None
+    if hasattr(args, 'hardware') and args.hardware:
+        hardware_profile = args.hardware[0]
+    
     check_n = 0 if args.skip_check else 1
+    
     final_path, success = optimize_model(
         model_path=model_path,
         output_path=output_path,
         check_n=check_n,
         overwrite_input_shapes=args.overwrite_shapes,
         skip_optimizers=args.skip_optimizers,
-        target_opset=args.opset  # Pass opset directly to the optimize function
-    )
+        target_opset=args.opset,  # Pass opset directly to the optimize function
+        hardware_profile=hardware_profile,
+        )
     
-    # Print model summary of final optimized model
-    print_model_summary(final_path)
+    # Print model summary of final optimized model if no hardware profile was specified
+    # (otherwise the check was done inside optimize_model)
+    if not hardware_profile:
+        print_model_summary(final_path)
         
 def list_command(args) -> None:
     """Handle the 'list' subcommand."""

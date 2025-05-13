@@ -23,7 +23,8 @@ Streamline your ONNX to NPU workflow, catch integration issues early, and boost 
 | **Clear report**      | CLI table ＋ optional JSON / Markdown export; highlights unsupported ops and optional‑feature gaps                      |
 | **Actionable hints**  | Suggestions and links to official docs for each unsupported operator                                                  |
 | **Opset update**      | Upgrade model opset (12 – 18) to match target hardware                                                                |
-
+| **Shape validation** | Shape checker enforcing 4‑D `(1, C, H, W)` constraint<br>• Rich Markdown / JSON report templates for CI badges | Uses ONNX shape‑inference to avoid manual parsing                       |
+| **Model simplification** | Integrate **onnx‑sim** (`onnxnpu opt [input_path]`)|
 ---
 
 <details>
@@ -31,11 +32,9 @@ Streamline your ONNX to NPU workflow, catch integration issues early, and boost 
 
 | Version | Target Date* | Major Items                                                                                           | Notes / Dependencies                                                    |
 | ------- | ------------ | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| **0.2 – Validation & Reporting** | May 2025 | • Shape checker enforcing 4‑D `(1, C, H, W)` constraint<br>• Rich Markdown / JSON report templates for CI badges | Uses ONNX shape‑inference to avoid manual parsing                       |
-| **0.3 – Graph Simplification & Slimming** | Jun 2025 | • Integrate **onnx‑sim** (`--simplify`)<br>• Model slimming (`--prune`, `--quantize`)<br>• Bundle Kneron **optimizer_scripts** (BN‑Conv fuse, Dropout removal …) | Requires onnx‑sim ≥ 0.4; quantization via ONNX QOps                     |
-| **0.4 – Automatic Op Replacement** | Jul 2025 | • `--replace` mapping table (e.g., `Reshape → Flatten`)<br>• Fallback to custom kernels / plugin stubs           | Needs rule set ＋ regression tests                                       |
-| **0.5 – Interactive Viewer**      | Aug 2025 | • `onnxnpu view` drag‑and‑drop web UI<br>• Highlight unsupported nodes directly on the graph<br>• Downloadable HTML report | Likely React + ONNX‑JS; demo hosted on GitHub Pages                     |
-| **0.6 – Extensibility & Ecosystem** | Sep 2025 | • Plugin system via Python entry‑points<br>• Community hardware‑profile submission flow<br>• Freeze stable API v1.0 | Plan to publish on conda‑forge after API stabilisation                  |
+| **0.3 – Automatic Op Replacement & Slimming** | Jul 2025 | • `--replace` mapping table (e.g., `Reshape → Flatten`)<br>• Fallback to custom kernels / plugin stubs<br>• Bundle Kneron **optimizer_scripts** (BN‑Conv fuse, Dropout removal …)            | Needs rule set ＋ regression tests                                       |
+| **0.4 – Interactive Viewer**      | Aug 2025 | • `onnxnpu view` drag‑and‑drop web UI<br>• Highlight unsupported nodes directly on the graph<br>• Downloadable HTML report | Likely React + ONNX‑JS; demo hosted on GitHub Pages                     |
+| **0.5 – Extensibility & Ecosystem** | Sep 2025 | • Plugin system via Python entry‑points<br>• Community hardware‑profile submission flow<br>• Freeze stable API v1.0 | Plan to publish on conda‑forge after API stabilisation                  |
 
 \* Dates are tentative and may shift based on resources.
 </details>

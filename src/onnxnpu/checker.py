@@ -202,6 +202,16 @@ class Checker:
         if usb_limit or flash_limit:
             estimated_size = estimate_nef_size(self.model_path, compression_ratio)
         
+        # Run shape inference to get more accurate shape information
+        try:
+            model_with_shapes = onnx.shape_inference.infer_shapes(self.onnx_model)
+        except Exception as e:
+            print(f"Warning: Shape inference failed: {e}")
+            model_with_shapes = self.onnx_model
+        
+        # Check input shape constraints
+        shape_issues = check_input_shape_constraints(model_with_shapes)
+        
         return Report(
             self.model_path.name, 
             self.onnx_model.ir_version, 
@@ -209,13 +219,14 @@ class Checker:
             self.profile.get("name", "unknown"),
             estimated_size=estimated_size,
             usb_limit=usb_limit,
-            flash_limit=flash_limit
+            flash_limit=flash_limit,
+            shape_issues=shape_issues
         )
 
 
 class Report:
     def __init__(self, model_name, ir_version, info, hw_name, 
-                 estimated_size=None, usb_limit=None, flash_limit=None):
+                 estimated_size=None, usb_limit=None, flash_limit=None, shape_issues=None):
         self.model_name = model_name
         self.ir_version = ir_version
         self.info = info
@@ -223,6 +234,7 @@ class Report:
         self.estimated_size = estimated_size
         self.usb_limit = usb_limit
         self.flash_limit = flash_limit
+        self.shape_issues = shape_issues or {}
 
     # ---------- plain text ----------
     def to_text(self) -> str:
@@ -278,6 +290,26 @@ class Report:
                 flash_mb = self.flash_limit / (1024 * 1024)
                 status = "-> MIGHT EXCEEDS LIMIT" if self.estimated_size > self.flash_limit else "-> OK"
                 out.append(f"Flash model limit:    {flash_mb:.2f} MB  {status}")
+                
+        # Add shape constraints section
+        if self.shape_issues:
+            out.extend([
+                "",
+                section_line,
+                "4D INPUT SHAPE CONSTRAINTS",
+                section_line
+            ])
+            
+            for input_name, info in self.shape_issues.items():
+                shape_str = ", ".join(str(d) for d in info["shape"])
+                out.append(f"輸入張量 '{input_name}' 形狀: [{shape_str}]")
+                if info["issues"]:
+                    out.append("發現問題:")
+                    for issue in info["issues"]:
+                        out.append(f"  • {issue}")
+                    out.append("注意: Kneron NPU 需要固定的 (1, C, H, W) 輸入形狀")
+                else:
+                    out.append("✓ 符合 NPU 要求的 (1, C, H, W) 格式")
         
         # Add summary section
         # op_total = sum(cnt for cnt, _, _ in self.info.values())
@@ -347,6 +379,21 @@ class Report:
                 status = "❌ EXCEEDS LIMIT" if self.estimated_size > self.flash_limit else "✅ OK"
                 md.append(f"| Flash Load | {flash_mb:.0f} MB | {status} |")
         
+        if self.shape_issues:
+            md.append(f"\n\n### 4D Input Shape Constraints\n")
+            
+            for input_name, info in self.shape_issues.items():
+                shape_str = ", ".join(str(d) for d in info["shape"])
+                md.append(f"Input: **{input_name}** Shape: [{shape_str}]\n")
+                
+                if info["issues"]:
+                    md.append("Issues:")
+                    for issue in info["issues"]:
+                        md.append(f"- {issue}")
+                    md.append("\nNote: Kneron NPUs require fixed (1, C, H, W) input shapes\n")
+                else:
+                    md.append("✓ Conforms to NPU required (1, C, H, W) format\n")
+        
         return "\n".join(md)
 
     __str__ = to_text
@@ -405,3 +452,61 @@ def valid_check(model_path: Path) -> bool:
         print(f"[ERROR] Invalid model: {model_path.name}")
         print(f"  {e}")
         raise
+    
+###########################################################################
+# Check input shape
+###########################################################################
+
+def check_input_shape_constraints(model) -> Dict[str, Dict]:
+    """
+    Check if input shapes conform to the (1, C, H, W) constraint required by Kneron NPUs.
+    
+    Args:
+        model: ONNX model
+        
+    Returns:
+        dict: Dictionary of shape issues, formatted as {
+            "input_name": {
+                "shape": [actual_shape],
+                "issues": ["issue1", "issue2"...]
+            }
+        }
+    """
+    issues = {}
+    
+    for input_tensor in model.graph.input:
+        # Skip non-tensor type inputs
+        if not input_tensor.type.HasField("tensor_type"):
+            continue
+            
+        shape = input_tensor.type.tensor_type.shape
+        dims = []
+        shape_issues = []
+        
+        # Collect dimensions
+        for i, dim in enumerate(shape.dim):
+            if dim.HasField("dim_param"):
+                # Dynamic dimension
+                dims.append(dim.dim_param)
+                shape_issues.append(f"動態維度在位置{i}, NPU需要確定的形狀")
+            elif dim.HasField("dim_value"):
+                dims.append(dim.dim_value)
+            else:
+                dims.append("?")
+                shape_issues.append(f"未知維度在位置{i}")
+        
+        # Check if dimension count is 4
+        if len(dims) != 4:
+            shape_issues.append(f"需要4維輸入 (1,C,H,W)，但找到{len(dims)}維")
+        elif len(dims) == 4:
+            # Check if batch dimension is 1
+            if dims[0] != 1 and isinstance(dims[0], int):
+                shape_issues.append(f"批次維度必須為1,但發現{dims[0]}")
+        
+        if shape_issues:
+            issues[input_tensor.name] = {
+                "shape": dims,
+                "issues": shape_issues
+            }
+    
+    return issues

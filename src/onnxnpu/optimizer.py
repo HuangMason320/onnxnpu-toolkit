@@ -97,7 +97,8 @@ def update_opset_version(model_path: Path, target_version: int, output_path: Opt
 def optimize_model(model_path: Path, output_path: Optional[Path] = None, 
                    check_n: int = 1, overwrite_input_shapes=None, 
                    skip_optimizers: Optional[list] = None,
-                   target_opset: Optional[int] = None) -> Tuple[Path, bool]:
+                   target_opset: Optional[int] = None,
+                   hardware_profile: Optional[str] = None) -> Tuple[Path, bool]:
     """Simplify ONNX model using onnxsim.
     
     Args:
@@ -176,5 +177,35 @@ def optimize_model(model_path: Path, output_path: Optional[Path] = None,
     except Exception as e:
         print(f"WARNING: Validation failed for optimized model: {e}")
         check_ok = False
+    
+    # Perform hardware compatibility check if profile is provided
+    if hardware_profile:
+        from .checker import Checker, load_profile, print_summary, print_model_summary
+        
+        print(f"\nChecking optimized model compatibility with {hardware_profile}...")
+        try:
+            profile = load_profile(hardware_profile)
+            checker = Checker(output_path, profile)
+            report = checker.run()
+            
+            print_model_summary(output_path)
+            
+            print(report)
+            print_summary(report)
+            
+            # Check for any unsupported operators
+            unsupported = any(status == "unsupported" 
+                              for _, status, _ in report.info.values())
+            if unsupported:
+                print("\nWARNING: Optimized model contains unsupported operators!")
+                check_ok = False
+                
+            # Check for shape issues
+            if report.shape_issues:
+                print("\nWARNING: Optimized model has input shape issues!")
+                check_ok = False
+                
+        except Exception as e:
+            print(f"ERROR: Hardware compatibility check failed: {e}")
     
     return output_path, check_ok
