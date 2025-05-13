@@ -5,7 +5,13 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/) and [Sem
 
 ## [Unreleased]
 ### Added
+### Changed
+### Fixed
+
+## [0.2.0] - 2025-05-13
+### Added
 - Add onnxsim into `onnxnpu opt`
+- Add model check after `onnxnpu opt` process
 ### Changed
 - Change acceptable python version (see detailed in [`pyproject.toml`](pyproject.toml))
 ### Fixed
