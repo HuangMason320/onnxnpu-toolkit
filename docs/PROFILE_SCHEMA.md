@@ -4,7 +4,6 @@ This document defines the structure of the `*.json` files located in `onnx_op_ch
 
 > The schema is intentionally simple — valid JSON that can be edited by hand yet expressive enough for automated validation.
 
----
 
 ## 1  Top‑level fields
 
@@ -14,10 +13,9 @@ This document defines the structure of the `*.json` files located in `onnx_op_ch
 | `vendor`    | `string`        | ❌        | Manufacturer or tool‑chain (e.g. "Kneron")                |
 | `version`   | `string`        | ❌        | Silicon / SDK version this profile refers to              |
 | `opset`     | `integer`       | ✔        | Highest ONNX opset version fully covered by the profile   |
+| `memory_limits`     | `object`       | ✔        | Limit model size of the hardware   |
 | `notes`     | `string`/`null` | ❌        | Free‑form remarks (markdown OK)                           |
 | `operators` | `object`        | ✔        | Map of *operator name* → *operator spec* (see §2)         |
-
----
 
 ## 2  Operator spec
 
@@ -43,7 +41,6 @@ Each key under `operators` represents a single ONNX operator.  The value is an *
 }
 ```
 
----
 
 ## 3  Example profile (KL720 revA)
 
@@ -53,6 +50,11 @@ Each key under `operators` represents a single ONNX operator.  The value is an *
   "vendor": "Kneron",
   "version": "SDK 1.5.0",
   "opset": 13,
+  "memory_limits": {
+    "usb_model_size": 36700160,
+    "flash_model_size": 33554432,
+    "compression_ratio": 0.25
+  },
   "operators": {
     "Conv": {
       "status": "supported",
@@ -72,9 +74,7 @@ Each key under `operators` represents a single ONNX operator.  The value is an *
 }
 ```
 
----
-
-## 4  Validation
+<!-- ## 4  Validation
 
 `onnx-op-check` runs a light JSON Schema validation at load time.  Developers can also call:
 
@@ -84,15 +84,13 @@ python -m onnx_op_check.validate profiles/KL720.json
 
 and receive detailed error messages if a profile deviates from this specification.
 
----
+--- -->
 
 ## 5  Versioning guidelines
 
 * **Non‑breaking additions** (e.g. new operators, extra dtypes) → **patch bump** (`1.0.0` → `1.0.1`).
 * **Breaking changes** (renaming fields, removing ops) → **minor bump** (`1.0.0` → `1.1.0`).
 * Major version will track fundamental schema overhauls.
-
----
 
 ## 6  FAQ
 
