@@ -79,7 +79,7 @@ def _build_parser() -> argparse.ArgumentParser:
         type=int,
         help="Update model to specified opset version (12-18)",
         metavar="VERSION",
-        choices=range(12, 18),  # Max version 18 as specified
+        choices=range(12, 19),
     )
     opt_parser.add_argument(
         "--skip-check", 
