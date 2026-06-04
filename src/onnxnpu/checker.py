@@ -307,14 +307,14 @@ class Report:
             
             for input_name, info in self.shape_issues.items():
                 shape_str = ", ".join(str(d) for d in info["shape"])
-                out.append(f"輸入張量 '{input_name}' 形狀: [{shape_str}]")
+                out.append(f"Input '{input_name}' shape: [{shape_str}]")
                 if info["issues"]:
-                    out.append("發現問題:")
+                    out.append("Issues found:")
                     for issue in info["issues"]:
                         out.append(f"  • {issue}")
-                    out.append("注意: Kneron NPU 需要固定的 (1, C, H, W) 輸入形狀")
+                    out.append("Note: Kneron NPU requires fixed (1, C, H, W) input shapes")
                 else:
-                    out.append("✓ 符合 NPU 要求的 (1, C, H, W) 格式")
+                    out.append("✓ Conforms to NPU required (1, C, H, W) format")
         
         # Add summary section
         # op_total = sum(cnt for cnt, _, _ in self.info.values())
@@ -485,20 +485,20 @@ def check_input_shape_constraints(model) -> Dict[str, Dict]:
             if dim.HasField("dim_param"):
                 # Dynamic dimension
                 dims.append(dim.dim_param)
-                shape_issues.append(f"動態維度在位置{i}, NPU需要確定的形狀")
+                shape_issues.append(f"Dynamic dimension at position {i}, NPU requires fixed shapes")
             elif dim.HasField("dim_value"):
                 dims.append(dim.dim_value)
             else:
                 dims.append("?")
-                shape_issues.append(f"未知維度在位置{i}")
+                shape_issues.append(f"Unknown dimension at position {i}")
         
         # Check if dimension count is 4
         if len(dims) != 4:
-            shape_issues.append(f"需要4維輸入 (1,C,H,W)，但找到{len(dims)}維")
+            shape_issues.append(f"Expected 4D input (1,C,H,W), but found {len(dims)}D")
         elif len(dims) == 4:
             # Check if batch dimension is 1
             if dims[0] != 1 and isinstance(dims[0], int):
-                shape_issues.append(f"批次維度必須為1,但發現{dims[0]}")
+                shape_issues.append(f"Batch dimension must be 1, but found {dims[0]}")
         
         if shape_issues:
             issues[input_tensor.name] = {
