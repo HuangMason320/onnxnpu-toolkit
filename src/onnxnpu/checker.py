@@ -27,6 +27,7 @@ __all__ = [
     "SYMBOLS",
     "load_profile",
     "iter_profiles",
+    "has_dynamic_axes",
     "print_model_summary",
     "print_summary",
     "Checker",
@@ -92,14 +93,23 @@ def _tensor_info(value_info) -> Tuple[str, str, List[str]]:
     return name, elem_type, shape
 
 
+def has_dynamic_axes(model: onnx.ModelProto) -> bool:
+    """Return True if any input/output tensor has non-static dimensions."""
+    return any(
+        not d.isdigit()
+        for vi in (*model.graph.input, *model.graph.output)
+        for d in _tensor_info(vi)[2]
+    )
+
+
 def print_model_summary(model_path: Path) -> bool:
     """Print basic info; return True if dynamic axes present."""
     print()
-    
+
     model = onnx.load(str(model_path))
     ir_version = model.ir_version
     opset_version = max(op.version for op in model.opset_import)
-    
+
     section_line = "═" * 60
     print(section_line)
     print("MODEL INFO")
@@ -124,12 +134,7 @@ def print_model_summary(model_path: Path) -> bool:
     _dump("Inputs", model.graph.input)
     _dump("Outputs", model.graph.output)
 
-    # detect dynamic dims
-    dynamic = any(
-        not d.isdigit()
-        for vi in (*model.graph.input, *model.graph.output)
-        for d in _tensor_info(vi)[2]
-    )
+    dynamic = has_dynamic_axes(model)
     print(
         f"Dynamic axes : {'Detected ' + SYMBOLS['unsupported'] if dynamic else 'None detected ' + SYMBOLS['supported']}"
     )
@@ -438,15 +443,7 @@ def valid_check(model_path: Path) -> bool:
     try:
         model = onnx.load(str(model_path))
         onnx.checker.check_model(model)
-        
-        # Use the existing dynamic axes detection from print_model_summary
-        dynamic = any(
-            not d.isdigit()
-            for vi in (*model.graph.input, *model.graph.output)
-            for d in _tensor_info(vi)[2]
-        )
-        
-        return dynamic
+        return has_dynamic_axes(model)
         
     except onnx.checker.ValidationError as e:
         print(f"[ERROR] Invalid model: {model_path.name}")
