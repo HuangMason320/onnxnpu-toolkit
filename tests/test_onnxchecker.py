@@ -4,33 +4,7 @@ import tempfile
 import os
 from pathlib import Path
 
-def valid_check(model_path):
-    """ 
-    Check if the model is valid and return whether it has dynamic axes.
-    Returns True if the model has dynamic axes, False if all dimensions are static.
-    """
-    try:
-        model = onnx.load(str(model_path))
-        onnx.checker.check_model(model)
-        
-        # Check for dynamic dimensions in inputs and outputs
-        dynamic = False
-        for tensor in list(model.graph.input) + list(model.graph.output):
-            shape = tensor.type.tensor_type.shape
-            for dim in shape.dim:
-                # If dim has dim_param or no dim_value, it's dynamic
-                if dim.HasField("dim_param") or not dim.HasField("dim_value"):
-                    dynamic = True
-                    break
-            if dynamic:
-                break
-                
-        return dynamic
-        
-    except onnx.checker.ValidationError as e:
-        print(f"[ERROR] Invalid model: {model_path.name}")
-        print(f"  {e}")
-        raise e
+from onnxnpu.checker import valid_check
 
 def test_valid_model():
     """
