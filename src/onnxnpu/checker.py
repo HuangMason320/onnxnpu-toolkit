@@ -102,11 +102,12 @@ def has_dynamic_axes(model: onnx.ModelProto) -> bool:
     )
 
 
-def print_model_summary(model_path: Path) -> bool:
+def print_model_summary(model_path: Path, model: onnx.ModelProto | None = None) -> bool:
     """Print basic info; return True if dynamic axes present."""
     print()
 
-    model = onnx.load(str(model_path))
+    if model is None:
+        model = onnx.load(str(model_path))
     ir_version = model.ir_version
     opset_version = max(op.version for op in model.opset_import)
 
@@ -171,10 +172,10 @@ def print_summary(report: "Report") -> None:
 class Checker:
     """Compare an ONNX model's operators to a hardware profile."""
 
-    def __init__(self, model: Path, profile: Dict):
+    def __init__(self, model: Path, profile: Dict, onnx_model: onnx.ModelProto | None = None):
         self.model_path = model
         self.profile = profile
-        self.onnx_model = onnx.load(str(model))
+        self.onnx_model = onnx_model if onnx_model is not None else onnx.load(str(model))
         self.profile_ops = {k.lower(): v for k, v in profile.get("operators", {}).items()}
 
     def run(self) -> "Report":

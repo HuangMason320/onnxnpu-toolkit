@@ -11,9 +11,12 @@ import sys
 from pathlib import Path
 from typing import List
 
+import onnx
+
 from . import __version__
 from .checker import (
     Checker,
+    has_dynamic_axes,
     iter_profiles,
     load_profile,
     print_model_summary,
@@ -123,26 +126,23 @@ def _build_parser() -> argparse.ArgumentParser:
 def check_command(args) -> None:
     """Handle the 'check' subcommand."""
     model_path = Path(args.model)
-    
+
     valid_check(model_path)
-    
-    # Show model IO + detect dynamic axes
-    dynamic = print_model_summary(model_path)
-    
-    # Determine which profiles to scan
+
+    model = onnx.load(str(model_path))
+    dynamic = print_model_summary(model_path, model)
+
     profile_keys = args.hardware if args.hardware else iter_profiles()
-    
+
     for key in profile_keys:
         profile = load_profile(key)
-        
-        # Warn if KL* profile & dynamic dims present
+
         if dynamic and profile.get("name", "").lower().startswith("kl"):
             print(f"[WARNING] Model uses dynamic axes which are NOT supported on {profile['name']}.")
-        
-        # Create checker with skip_size_check option
-        checker = Checker(model_path, profile)
+
+        checker = Checker(model_path, profile, onnx_model=model)
         report = checker.run()
-        
+
         print(report.to_markdown() if args.markdown else report)
         print_summary(report)
         print()
