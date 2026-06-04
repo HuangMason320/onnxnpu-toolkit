@@ -316,42 +316,6 @@ class Report:
                 else:
                     out.append("✓ Conforms to NPU required (1, C, H, W) format")
         
-        # Add summary section
-        # op_total = sum(cnt for cnt, _, _ in self.info.values())
-        # unsupported = sum(1 for _, status, _ in self.info.values() if status == "unsupported")
-        # partial = sum(1 for _, status, _ in self.info.values() if status == "partial")
-        
-        # out.extend([
-        #     "",
-        #     section_line,
-        #     "SUMMARY",
-        #     section_line
-        # ])
-        
-        # if unsupported:
-        #     out.append(f"⚠️ Operators: {unsupported} unsupported operator(s) detected")
-        # elif partial:
-        #     out.append(f"△ Operators: {partial} partially supported operator(s) detected")
-        # else:
-        #     out.append(f"✓ Operators: All {len(self.info)} operators ({op_total} instances) are supported")
-        
-        # # Add size check summary if applicable
-        # if self.estimated_size is not None and (self.usb_limit or self.flash_limit):
-        #     # Check if any limit is exceeded
-        #     exceeded = False
-        #     if self.usb_limit and self.estimated_size > self.usb_limit:
-        #         exceeded = True
-        #         exceed_by = (self.estimated_size - self.usb_limit) / (1024 * 1024)
-        #         out.append(f"⚠️ Memory: Exceeds USB limit by {exceed_by:.2f} MB")
-            
-        #     if self.flash_limit and self.estimated_size > self.flash_limit:
-        #         exceeded = True
-        #         exceed_by = (self.estimated_size - self.flash_limit) / (1024 * 1024)
-        #         out.append(f"⚠️ Memory: Exceeds Flash limit by {exceed_by:.2f} MB")
-            
-        #     if not exceeded:
-        #         out.append(f"✓ Memory: Within all hardware limits")
-        
         return "\n".join(out)
 
     # ---------- markdown ----------
