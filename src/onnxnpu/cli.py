@@ -10,7 +10,6 @@ import argparse
 import sys
 from pathlib import Path
 from typing import List
-import onnx
 
 from . import __version__
 from .checker import (
@@ -21,7 +20,7 @@ from .checker import (
     print_summary,
     valid_check,
 )
-from .optimizer import update_opset_version
+from .optimizer import optimize_model, update_opset_version
 
 # ---------------------------------------------------------------------------
 # Argument parsing
@@ -160,11 +159,8 @@ def opt_command(args) -> None:
         print(f"WARNING: Input model validation failed: {str(e)}")
         print("Attempting to optimize despite validation issues...")
     
-    # Apply model optimization with optional opset update
-    from .optimizer import optimize_model
-    
     hardware_profile = None
-    if hasattr(args, 'hardware') and args.hardware:
+    if args.hardware:
         hardware_profile = args.hardware[0]
     
     check_n = 0 if args.skip_check else 1
