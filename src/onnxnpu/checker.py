@@ -288,12 +288,12 @@ class Report:
             
             if self.usb_limit is not None:
                 usb_mb = self.usb_limit / (1024 * 1024)
-                status = "-> MIGHT EXCEEDS LIMIT" if self.estimated_size > self.usb_limit else "-> OK"
+                status = "-> MIGHT EXCEED LIMIT" if self.estimated_size > self.usb_limit else "-> OK"
                 out.append(f"USB model limit:      {usb_mb:.2f} MB  {status}")
                     
             if self.flash_limit is not None:
                 flash_mb = self.flash_limit / (1024 * 1024)
-                status = "-> MIGHT EXCEEDS LIMIT" if self.estimated_size > self.flash_limit else "-> OK"
+                status = "-> MIGHT EXCEED LIMIT" if self.estimated_size > self.flash_limit else "-> OK"
                 out.append(f"Flash model limit:    {flash_mb:.2f} MB  {status}")
                 
         # Add shape constraints section
