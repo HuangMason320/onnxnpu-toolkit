@@ -218,15 +218,10 @@ def main(argv: List[str] | None = None) -> None:
     
     # Handle legacy command style (no subcommand)
     if args.command is None:
-        # If the first argument looks like a file path, assume it's the 'check' command
-        if len(sys.argv) > 1 and not sys.argv[1].startswith('-') and Path(sys.argv[1]).exists():
+        raw = argv if argv is not None else sys.argv[1:]
+        if raw and not raw[0].startswith('-') and Path(raw[0]).exists():
             print("[DEPRECATED] Running in legacy mode. Please use 'onpu check' instead.")
-            # Reconstruct arguments as if 'check' was specified
-            if argv is None:
-                argv = sys.argv[1:]
-            else:
-                argv = ['check'] + argv
-            args = _build_parser().parse_args(argv)
+            args = _build_parser().parse_args(['check'] + raw)
         else:
             print("Error: No command specified. Use 'check' or 'opt'.")
             _build_parser().print_help()
